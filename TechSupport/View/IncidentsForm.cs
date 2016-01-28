@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TechSupport
 {
-    public partial class Form1 : Form
+    public partial class IncidentsForm : Form
     {
-        public Form1()
+        public IncidentsForm()
         {
             InitializeComponent();
         }
