@@ -41,13 +41,10 @@ namespace TechSupport.DBAccess
                 }
 
             }
-            catch (SqlException ex)
+            catch (SqlException ex )
             {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
+                System.Windows.Forms.MessageBox.Show("A Database error occured: " + ex.Message);
+                return null;
             }
             finally
             {

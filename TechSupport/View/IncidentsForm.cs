@@ -23,7 +23,10 @@ namespace TechSupport
         private void showOpenIncidents()
         {
             List<Incident> incidents = IncidentsController.OpenIncidents();
-
+            if (incidents == null)
+            {
+                return;
+            }
             Incident incident;
             for (int i = 0; i < incidents.Count; i++)
             {
