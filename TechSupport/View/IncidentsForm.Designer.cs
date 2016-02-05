@@ -85,6 +85,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "IncidentsForm";
             this.Text = "Open Incidents";
+            this.Load += new System.EventHandler(this.IncidentsForm_Load);
             this.ResumeLayout(false);
 
         }

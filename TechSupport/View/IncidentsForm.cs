@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TechSupport.Model;
+using System.Data.SqlClient;
 
 namespace TechSupport
 {
@@ -17,16 +18,27 @@ namespace TechSupport
         public IncidentsForm()
         {
             InitializeComponent();
+        }
+
+        private void IncidentsForm_Load(object sender, EventArgs e)
+        {
             showOpenIncidents();
         }
 
         private void showOpenIncidents()
         {
-            List<Incident> incidents = IncidentsController.OpenIncidents();
-            if (incidents == null)
+            List<Incident> incidents;
+            try
             {
+                incidents = IncidentsController.OpenIncidents();
+            }
+            catch (SqlException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("A Database error occured: " + ex.Message);
+                this.BeginInvoke(new MethodInvoker(Close));
                 return;
             }
+
             Incident incident;
             for (int i = 0; i < incidents.Count; i++)
             {
@@ -38,7 +50,6 @@ namespace TechSupport
                 IncidentsListView.Items[i].SubItems.Add(incident.Title);
             }
         }
-
 
     }
 }

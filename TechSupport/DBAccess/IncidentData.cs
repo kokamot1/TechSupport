@@ -41,11 +41,6 @@ namespace TechSupport.DBAccess
                 }
 
             }
-            catch (SqlException ex )
-            {
-                System.Windows.Forms.MessageBox.Show("A Database error occured: " + ex.Message);
-                return null;
-            }
             finally
             {
                 if (connection != null)
