@@ -1,4 +1,4 @@
-﻿namespace TechSupport.View
+﻿namespace TechSupport
 {
     partial class NewIncidentForm
     {
@@ -50,7 +50,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Customer:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -140,7 +139,7 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // NecIncidentForm
+            // NewIncidentForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -155,8 +154,9 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "NecIncidentForm";
+            this.Name = "NewIncidentForm";
             this.Text = "NecIncidentForm";
+            this.Load += new System.EventHandler(this.NewIncidentForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

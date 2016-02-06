@@ -44,10 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\CustomersController.cs" />
     <Compile Include="Controller\IncidentsController.cs" />
+    <Compile Include="Controller\ProductsController.cs" />
+    <Compile Include="DBAccess\CustomerData.cs" />
     <Compile Include="DBAccess\DBConnection.cs" />
     <Compile Include="DBAccess\IncidentData.cs" />
+    <Compile Include="DBAccess\ProductData.cs" />
+    <Compile Include="Model\Customer.cs" />
     <Compile Include="Model\Incident.cs" />
+    <Compile Include="Model\Product.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\IncidentsForm.cs">
