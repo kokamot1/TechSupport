@@ -127,6 +127,7 @@
             this.createIncidentButton.TabIndex = 8;
             this.createIncidentButton.Text = "Create Incident";
             this.createIncidentButton.UseVisualStyleBackColor = true;
+            this.createIncidentButton.Click += new System.EventHandler(this.createIncidentButton_Click);
             // 
             // cancelButton
             // 

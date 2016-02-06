@@ -40,7 +40,7 @@ namespace TechSupport
             }
             customerBox.DataSource = customersList;
             customerBox.DisplayMember = "Name";
-            customerBox.ValueMember = "CustomerID";
+            //customerBox.ValueMember = "CustomerID";
 
             List<Product> productsList;
             try
@@ -55,10 +55,47 @@ namespace TechSupport
             }
             productBox.DataSource = productsList;
             productBox.DisplayMember = "Name";
-            productBox.ValueMember = "ProductCode";
+            //productBox.ValueMember = "ProductCode";
 
         }
 
+        private Boolean IsValidEntry()
+        {
+            if (titleBox.Text.Trim() == "")
+            {
+                System.Windows.Forms.MessageBox.Show("Title cannot be blank");
+                return false;
+            }
+            else if (descriptionBox.Text.Trim() == "")
+            {
+                System.Windows.Forms.MessageBox.Show("Description cannot be blank");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
+        private void createIncidentButton_Click(object sender, EventArgs e)
+        {
+            if (IsValidEntry())
+            {
+                Product product = (Product) productBox.SelectedItem;
+                Customer customer = (Customer)customerBox.SelectedItem;
+                String title = titleBox.Text;
+                String description = descriptionBox.Text;
+
+                if (IncidentsController.AddIncident(customer, product, title, description))
+                {
+                    System.Windows.Forms.MessageBox.Show("Incident Added");
+                }
+                else {
+                    System.Windows.Forms.MessageBox.Show("Error Adding Incident");
+                }
+
+            }
+             
+        }
     }
 }

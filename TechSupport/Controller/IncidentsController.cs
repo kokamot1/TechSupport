@@ -13,5 +13,10 @@ namespace TechSupport
         {
             return IncidentData.GetOpenIncidents();
         }
+
+        public static Boolean AddIncident(Customer customer, Product product, string title, string description)
+        {
+            return false;
+        } 
     }
 }
