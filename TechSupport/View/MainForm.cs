@@ -28,5 +28,12 @@ namespace TechSupport
             incidents.MdiParent = this;
             incidents.Show();
         }
+
+        private void addNewIncidentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewIncidentForm newIncident = new NewIncidentForm();
+            newIncident.MdiParent = this;
+            newIncident.Show();
+        }
     }
 }

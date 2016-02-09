@@ -40,7 +40,6 @@ namespace TechSupport
             }
             customerBox.DataSource = customersList;
             customerBox.DisplayMember = "Name";
-            //customerBox.ValueMember = "CustomerID";
 
             List<Product> productsList;
             try
@@ -55,8 +54,6 @@ namespace TechSupport
             }
             productBox.DataSource = productsList;
             productBox.DisplayMember = "Name";
-            //productBox.ValueMember = "ProductCode";
-
         }
 
         private Boolean IsValidEntry()
@@ -86,14 +83,16 @@ namespace TechSupport
                 String title = titleBox.Text;
                 String description = descriptionBox.Text;
 
-                if (IncidentsController.AddIncident(customer, product, title, description))
+                try
                 {
+                    IncidentsController.AddIncident(customer, product, title, description);
                     System.Windows.Forms.MessageBox.Show("Incident Added");
+                    Close();
                 }
-                else {
-                    System.Windows.Forms.MessageBox.Show("Error Adding Incident");
+                catch (SqlException exception)
+                {
+                    System.Windows.Forms.MessageBox.Show("Error Adding Incident. \nDetails: " + exception.Message);
                 }
-
             }
              
         }

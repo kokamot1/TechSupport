@@ -75,7 +75,7 @@ namespace TechSupport.DBAccess
                 connection.Open();
                 insertCommand.ExecuteNonQuery();
                 string selectStatement =
-                    "SELECT IDENT_CURRENT('Incident') FROM Incident";
+                    "SELECT IDENT_CURRENT('Incidents') FROM Incidents";
                 SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
                 int incidentID = Convert.ToInt32(selectCommand.ExecuteScalar());
                 return incidentID;

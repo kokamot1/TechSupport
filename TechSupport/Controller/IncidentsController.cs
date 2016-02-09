@@ -14,9 +14,19 @@ namespace TechSupport
             return IncidentData.GetOpenIncidents();
         }
 
-        public static Boolean AddIncident(Customer customer, Product product, string title, string description)
+        public static void AddIncident(Customer customer, Product product, string title, string description)
         {
-            return false;
+            if (customer == null || product == null) 
+            {
+                throw new ArgumentException("customer and product parameters must not be null");
+            }
+            Incident incident = new Incident();
+            incident.CustomerID = customer.CustomerID;
+            incident.ProductCode = product.ProductCode;
+            incident.Title = title;
+            incident.Description = description;
+            incident.DateOpened = DateTime.Now;
+            IncidentData.AddIncident(incident);
         } 
     }
 }
