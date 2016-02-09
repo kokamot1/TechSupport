@@ -10,8 +10,9 @@ namespace TechSupport.Model
         public string ProductCode { get; set; }
         public DateTime DateOpened { get; set; }
         public string Customer { get; set; }
+        public int CustomerID { get; set; }
         public string Technician { get; set; }
         public string Title { get; set; }
-
+        public string Description { get; set; }
     }
 }
