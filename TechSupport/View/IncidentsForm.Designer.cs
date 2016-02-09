@@ -74,7 +74,7 @@
             // TitleCol
             // 
             this.TitleCol.Text = "Title";
-            this.TitleCol.Width = 318;
+            this.TitleCol.Width = 291;
             // 
             // IncidentsForm
             // 
