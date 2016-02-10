@@ -14,7 +14,7 @@ namespace TechSupport
             return IncidentData.GetOpenIncidents();
         }
 
-        public static void AddIncident(Customer customer, Product product, string title, string description)
+        public static int AddIncident(Customer customer, Product product, string title, string description)
         {
             if (customer == null || product == null) 
             {
@@ -26,7 +26,7 @@ namespace TechSupport
             incident.Title = title;
             incident.Description = description;
             incident.DateOpened = DateTime.Now;
-            IncidentData.AddIncident(incident);
+            return IncidentData.AddIncident(incident);
         } 
     }
 }

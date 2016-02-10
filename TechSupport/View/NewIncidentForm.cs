@@ -85,8 +85,8 @@ namespace TechSupport
 
                 try
                 {
-                    IncidentsController.AddIncident(customer, product, title, description);
-                    System.Windows.Forms.MessageBox.Show("Incident Added");
+                    int newIncidentID = IncidentsController.AddIncident(customer, product, title, description);
+                    System.Windows.Forms.MessageBox.Show("Incident " + newIncidentID + " added");
                     Close();
                 }
                 catch (SqlException exception)
