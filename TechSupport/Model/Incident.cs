@@ -25,6 +25,7 @@ namespace TechSupport.Model
             }
         }
         public DateTime DateOpened { get; set; }
+        public DateTime DateClosed { get; set; }
         public string Customer { get; set; }
         public int CustomerID { get; set; }
         public string ProductCode { get; set; }

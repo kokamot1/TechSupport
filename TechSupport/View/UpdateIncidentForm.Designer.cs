@@ -164,6 +164,7 @@
             // 
             // TextToAddBox
             // 
+            this.TextToAddBox.Enabled = false;
             this.TextToAddBox.Location = new System.Drawing.Point(165, 387);
             this.TextToAddBox.Multiline = true;
             this.TextToAddBox.Name = "TextToAddBox";
@@ -199,6 +200,7 @@
             this.CloseIncidentBtn.TabIndex = 21;
             this.CloseIncidentBtn.Text = "Close Incident";
             this.CloseIncidentBtn.UseVisualStyleBackColor = true;
+            this.CloseIncidentBtn.Click += new System.EventHandler(this.CloseIncidentBtn_Click);
             // 
             // CancelBtn
             // 

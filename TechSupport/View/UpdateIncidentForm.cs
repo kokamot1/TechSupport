@@ -15,6 +15,8 @@ namespace TechSupport
 {
     public partial class UpdateIncidentForm : Form
     {
+        private Incident currentIncident;
+
         public UpdateIncidentForm()
         {
             InitializeComponent();
@@ -45,18 +47,17 @@ namespace TechSupport
                 return;
             }
 
-            Incident incident = null;
             try
             {
-                incident = IncidentsController.GetIncidentByID(incidentID);
+                this.currentIncident = IncidentsController.GetIncidentByID(incidentID);
             }
             catch (SqlException ex)
             {
                 System.Windows.Forms.MessageBox.Show("Database Query error fetching incident.\n" + ex.Message);
             }
-            if (incident != null)
+            if (this.currentIncident != null)
             {
-                putIncidentDataIntoForm(incident);
+                putIncidentDataIntoForm(this.currentIncident);
             }
             else
             {
@@ -101,6 +102,49 @@ namespace TechSupport
             {
                 TechnicianBox.SelectedIndex = -1;
             }
+            CloseIncidentBtn.Enabled = true;
+            UpdateBtn.Enabled = true;
+            TextToAddBox.Enabled = true;
+        }
+
+        private void CloseIncidentBtn_Click(object sender, EventArgs e)
+        {
+            if (TechnicianBox.SelectedIndex < 0)
+            {
+                System.Windows.Forms.MessageBox.Show("A Technician must be assigned before an incident can be closed");
+                return;
+            }
+            Boolean successfullyClosed = CloseIncident();
+            if (successfullyClosed)
+            {
+                System.Windows.Forms.MessageBox.Show("Incident Closed");
+                Close();
+            }            
+        }
+
+        private Boolean CloseIncident()
+        {
+            List<Technician> techList = (List<Technician>) TechnicianBox.DataSource;
+            String selectedTechName = techList[TechnicianBox.SelectedIndex].Name;
+            int selectedTechID = techList[TechnicianBox.SelectedIndex].TechID;
+
+            String addText = TextToAddBox.Text;
+
+            this.currentIncident.TechID = selectedTechID;
+            this.currentIncident.Technician = selectedTechName;
+            this.currentIncident.Description = this.currentIncident.Description + "\n" + addText;
+            this.currentIncident.DateClosed = DateTime.Now;
+
+            try
+            {
+                IncidentsController.UpdateIncident(this.currentIncident);
+            }
+            catch (SqlException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Database error updating incidnet.\n" + ex.Message);
+                return false;
+            }
+            return true;
         }
 
     }

@@ -136,5 +136,36 @@ namespace TechSupport.DBAccess
                     reader.Close();
             }
         }
+    
+        public static void UpdateIncident(Incident incident)
+        {
+            SqlConnection connection = DBConnection.GetConnection();
+            String updateStatement =
+                "UPDATE Incidents " +
+                "SET CustomerID = @CustomerID, " +
+                "    ProductCode = @ProductCode, " +
+                "    TechID = @TechID, " +
+                "    DateClosed = @DateClosed, " +
+                "    Title = @Title, " +
+                "    Description = @Description " +
+                "WHERE IncidentID = @IncidentID ";
+            SqlCommand updateCommand = new SqlCommand(updateStatement, connection);
+            updateCommand.Parameters.AddWithValue("@IncidentID", incident.IncidentID);
+            updateCommand.Parameters.AddWithValue("@CustomerID", incident.CustomerID);
+            updateCommand.Parameters.AddWithValue("@ProductCode", incident.ProductCode);
+            updateCommand.Parameters.AddWithValue("@TechID", incident.TechID);
+            updateCommand.Parameters.AddWithValue("@DateClosed", incident.DateClosed);
+            updateCommand.Parameters.AddWithValue("@Title", incident.Title);
+            updateCommand.Parameters.AddWithValue("@Description", incident.Description);
+            try
+            {
+                connection.Open();
+                updateCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
