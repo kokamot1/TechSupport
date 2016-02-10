@@ -172,13 +172,13 @@
             // 
             // GetIncidentBtn
             // 
-            this.GetIncidentBtn.Enabled = false;
             this.GetIncidentBtn.Location = new System.Drawing.Point(297, 24);
             this.GetIncidentBtn.Name = "GetIncidentBtn";
             this.GetIncidentBtn.Size = new System.Drawing.Size(75, 23);
             this.GetIncidentBtn.TabIndex = 19;
             this.GetIncidentBtn.Text = "Get Incident";
             this.GetIncidentBtn.UseVisualStyleBackColor = true;
+            this.GetIncidentBtn.Click += new System.EventHandler(this.GetIncidentBtn_Click);
             // 
             // UpdateBtn
             // 

@@ -27,6 +27,12 @@ namespace TechSupport
             incident.Description = description;
             incident.DateOpened = DateTime.Now;
             IncidentData.AddIncident(incident);
-        } 
+        }
+
+        public static Incident GetIncidentByID(int incidentID)
+        {
+            return IncidentData.IncidentByID(incidentID);
+        }
+
     }
 }

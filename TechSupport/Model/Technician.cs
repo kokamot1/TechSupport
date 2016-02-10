@@ -9,18 +9,18 @@ namespace TechSupport.Model
     class Technician
     {
         //Technician ID should not be changed
-        private readonly int technicianID;
+        private readonly int techID;
 
-        public Technician(int technicianID)
+        public Technician(int techID)
         {
-            this.technicianID = technicianID;
+            this.techID = techID;
         }
         
-        public int TechnicianID 
+        public int TechID 
         {
             get
             {
-                return technicianID;
+                return techID;
             }
         }
         public string Name { get; set; }

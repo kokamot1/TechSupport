@@ -85,5 +85,56 @@ namespace TechSupport.DBAccess
                 connection.Close();
             }
         }
+
+        public static Incident IncidentByID(int incidentID)
+        {
+            SqlConnection connection = DBConnection.GetConnection();
+            string selectStatement =
+                "SELECT i.ProductCode, i.DateOpened, c.Name as Customer, c.CustomerID as customerID, " + 
+                "    t.Name as Technician, t.TechID, i.Title, p.Name as ProductName, i.IncidentID, i.Description " +
+                "FROM Incidents i " +
+                "JOIN Customers c ON c.CustomerID = i.CustomerID " +
+                "JOIN Products p ON p.ProductCode = i.ProductCode " +
+                "LEFT OUTER JOIN Technicians t ON t.TechID = i.TechID " +
+                "WHERE IncidentID = @IncidentID";
+            SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
+            selectCommand.Parameters.AddWithValue("@IncidentID", incidentID);
+            SqlDataReader reader = null;
+            try
+            {
+                connection.Open();
+                reader = selectCommand.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    Incident incident = new Incident((int) reader["IncidentID"]);
+                    incident.CustomerID = (int) reader["CustomerID"];
+                    incident.Customer = reader["Customer"].ToString();
+                    incident.DateOpened = (DateTime) reader["DateOpened"];
+                    incident.Title = reader["Title"].ToString();
+                    incident.Description = reader["Description"].ToString();
+                    if (!DBNull.Value.Equals(reader["TechID"]))
+                    {
+                        incident.TechID = (int)reader["TechID"];
+                    }
+                    incident.Technician = reader["Technician"].ToString();
+                    incident.ProductCode = reader["ProductCode"].ToString();
+                    incident.ProductName = reader["ProductName"].ToString();
+                    return incident;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+                if (reader != null)
+                    reader.Close();
+            }
+        }
     }
 }
