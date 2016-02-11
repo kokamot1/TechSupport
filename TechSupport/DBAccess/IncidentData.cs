@@ -37,7 +37,7 @@ namespace TechSupport.DBAccess
                     incident.DateOpened = (DateTime)reader["DateOpened"];
                     incident.Customer = reader["Customer"].ToString();
                     incident.CustomerID = (int) reader["CustomerID"];
-                    incident.Technician = reader["Technician"].ToString();
+                    incident.TechName = reader["Technician"].ToString();
                     incident.Title = reader["Title"].ToString();
                     incidentList.Add(incident);
                 }
@@ -90,7 +90,7 @@ namespace TechSupport.DBAccess
         {
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
-                "SELECT i.ProductCode, i.DateOpened, c.Name as Customer, c.CustomerID as customerID, " + 
+                "SELECT i.ProductCode, i.DateOpened, i.DateClosed, c.Name as Customer, c.CustomerID as customerID, " + 
                 "    t.Name as Technician, t.TechID, i.Title, p.Name as ProductName, i.IncidentID, i.Description " +
                 "FROM Incidents i " +
                 "JOIN Customers c ON c.CustomerID = i.CustomerID " +
@@ -113,11 +113,26 @@ namespace TechSupport.DBAccess
                     incident.DateOpened = (DateTime) reader["DateOpened"];
                     incident.Title = reader["Title"].ToString();
                     incident.Description = reader["Description"].ToString();
+                    
                     if (!DBNull.Value.Equals(reader["TechID"]))
                     {
                         incident.TechID = (int)reader["TechID"];
+                        incident.TechName = reader["Technician"].ToString();
                     }
-                    incident.Technician = reader["Technician"].ToString();
+                    else
+                    {
+                        incident.TechID = null;
+                        incident.TechName = null;
+                    }
+
+                    if (!DBNull.Value.Equals(reader["DateClosed"]))
+                    {
+                        incident.DateClosed = (DateTime) reader["DateClosed"];
+                    }
+                    else
+                    {
+                        incident.DateClosed = null;
+                    }
                     incident.ProductCode = reader["ProductCode"].ToString();
                     incident.ProductName = reader["ProductName"].ToString();
                     return incident;
@@ -153,8 +168,22 @@ namespace TechSupport.DBAccess
             updateCommand.Parameters.AddWithValue("@IncidentID", incident.IncidentID);
             updateCommand.Parameters.AddWithValue("@CustomerID", incident.CustomerID);
             updateCommand.Parameters.AddWithValue("@ProductCode", incident.ProductCode);
-            updateCommand.Parameters.AddWithValue("@TechID", incident.TechID);
-            updateCommand.Parameters.AddWithValue("@DateClosed", incident.DateClosed);
+            if (incident.TechID.HasValue)
+            {
+                updateCommand.Parameters.AddWithValue("@TechID", incident.TechID);
+            }
+            else
+            {
+                updateCommand.Parameters.AddWithValue("@TechID", DBNull.Value);
+            }
+            if (incident.DateClosed.HasValue)
+            {
+                updateCommand.Parameters.AddWithValue("@DateClosed", incident.DateClosed);
+            }
+            else
+            {
+                updateCommand.Parameters.AddWithValue("@DateClosed", DBNull.Value);
+            }
             updateCommand.Parameters.AddWithValue("@Title", incident.Title);
             updateCommand.Parameters.AddWithValue("@Description", incident.Description);
             try

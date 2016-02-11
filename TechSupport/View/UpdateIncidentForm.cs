@@ -105,6 +105,7 @@ namespace TechSupport
             CloseIncidentBtn.Enabled = true;
             UpdateBtn.Enabled = true;
             TextToAddBox.Enabled = true;
+            TechnicianBox.Enabled = true;
         }
 
         private void CloseIncidentBtn_Click(object sender, EventArgs e)
@@ -131,8 +132,8 @@ namespace TechSupport
             String addText = TextToAddBox.Text;
 
             this.currentIncident.TechID = selectedTechID;
-            this.currentIncident.Technician = selectedTechName;
-            this.currentIncident.Description = this.currentIncident.Description + "\n" + addText;
+            this.currentIncident.TechName = selectedTechName;
+            this.currentIncident.Description = this.currentIncident.Description + Environment.NewLine + addText;
             this.currentIncident.DateClosed = DateTime.Now;
 
             try
@@ -146,6 +147,48 @@ namespace TechSupport
             }
             return true;
         }
+
+        private void UpdateBtn_Click(object sender, EventArgs e)
+        {
+            Boolean newTechAssigned = false;
+            if (TechnicianBox.SelectedIndex >= 0)
+            {
+                List<Technician> techList = (List<Technician>)TechnicianBox.DataSource;
+                String selectedTechName = techList[TechnicianBox.SelectedIndex].Name;
+                int selectedTechID = techList[TechnicianBox.SelectedIndex].TechID;
+                if (selectedTechID != this.currentIncident.TechID)
+                {
+                    newTechAssigned = true;
+                }
+                this.currentIncident.TechID = selectedTechID;
+                this.currentIncident.TechName = selectedTechName;
+            }
+
+            String addText = TextToAddBox.Text;
+            if (addText.Trim() == "" && !newTechAssigned)
+            {
+                System.Windows.Forms.MessageBox.Show("Incident cannot be updated unless text is added or a tech is changed");
+                return;
+            }
+            else if (addText.Trim() == "")
+            {
+                addText = DateTime.Now.ToString() + ":  updated/assigned the technician";
+            }
+            this.currentIncident.Description = this.currentIncident.Description + Environment.NewLine + addText;
+
+            try
+            {
+                IncidentsController.UpdateIncident(this.currentIncident);
+            }
+            catch (SqlException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Database error updating incident.\n" + ex.Message);
+                return;
+            }
+            System.Windows.Forms.MessageBox.Show("Incident updated");
+            Close();
+        }
+
 
     }
 

@@ -25,13 +25,13 @@ namespace TechSupport.Model
             }
         }
         public DateTime DateOpened { get; set; }
-        public DateTime DateClosed { get; set; }
+        public DateTime? DateClosed { get; set; }
         public string Customer { get; set; }
         public int CustomerID { get; set; }
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
-        public string Technician { get; set; }
-        public int TechID { get; set; }
+        public string TechName { get; set; }
+        public int? TechID { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
     }

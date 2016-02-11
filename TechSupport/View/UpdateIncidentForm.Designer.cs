@@ -190,6 +190,7 @@
             this.UpdateBtn.TabIndex = 20;
             this.UpdateBtn.Text = "Update";
             this.UpdateBtn.UseVisualStyleBackColor = true;
+            this.UpdateBtn.Click += new System.EventHandler(this.UpdateBtn_Click);
             // 
             // CloseIncidentBtn
             // 
@@ -231,6 +232,7 @@
             // TechnicianBox
             // 
             this.TechnicianBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TechnicianBox.Enabled = false;
             this.TechnicianBox.FormattingEnabled = true;
             this.TechnicianBox.Location = new System.Drawing.Point(165, 146);
             this.TechnicianBox.Name = "TechnicianBox";

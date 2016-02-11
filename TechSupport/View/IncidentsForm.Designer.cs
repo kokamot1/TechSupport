@@ -46,7 +46,7 @@
             this.TitleCol});
             this.IncidentsListView.Location = new System.Drawing.Point(0, 0);
             this.IncidentsListView.Name = "IncidentsListView";
-            this.IncidentsListView.Size = new System.Drawing.Size(875, 340);
+            this.IncidentsListView.Size = new System.Drawing.Size(880, 581);
             this.IncidentsListView.TabIndex = 0;
             this.IncidentsListView.UseCompatibleStateImageBehavior = false;
             this.IncidentsListView.View = System.Windows.Forms.View.Details;
@@ -80,7 +80,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 341);
+            this.ClientSize = new System.Drawing.Size(881, 581);
             this.Controls.Add(this.IncidentsListView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "IncidentsForm";
