@@ -180,8 +180,9 @@ namespace TechSupport
             }
             else if (addText.Trim() == "")
             {
-                addText = DateTime.Now.ToString() + ":  updated/assigned the technician";
+                addText = "updated/assigned the technician";
             }
+            addText = "<" + DateTime.Now.Date.ToShortDateString() + ">  " + addText; 
             this.currentIncident.Description = this.currentIncident.Description + Environment.NewLine + addText;
 
             try
