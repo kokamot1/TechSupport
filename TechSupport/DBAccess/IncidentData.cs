@@ -82,7 +82,8 @@ namespace TechSupport.DBAccess
             }
             finally
             {
-                connection.Close();
+                if (connection != null)
+                    connection.Close();
             }
         }
 
