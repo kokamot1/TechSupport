@@ -42,27 +42,35 @@ namespace TechSupport
             }
             catch (System.FormatException ex)
             {
-                System.Windows.Forms.MessageBox.Show("Incident ID must be an integer");
+                MessageBox.Show("Incident ID must be an integer");
                 IncidentIDBox.Text = "";
                 return;
             }
-
+            Incident incident;
             try
             {
-                this.currentIncident = IncidentsController.GetIncidentByID(incidentID);
+                incident = IncidentsController.GetIncidentByID(incidentID);
             }
             catch (SqlException ex)
             {
-                System.Windows.Forms.MessageBox.Show("Database Query error fetching incident.\n" + ex.Message);
+                MessageBox.Show("Database Query error fetching incident.\n" + ex.Message);
+                return;
             }
-            if (this.currentIncident != null)
+            if (incident == null)
             {
-                putIncidentDataIntoForm(this.currentIncident);
+                MessageBox.Show("No incidents found with Incident ID " + incidentID);
+                return;
+            }
+            else if (incident.DateClosed != null)
+            {
+                MessageBox.Show("Incident " + incidentID + " has already been closed");
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("No incidents found with Incident ID " + incidentID);
+                this.currentIncident = incident;
+                putIncidentDataIntoForm(incident);
             }
+
         }
 
 
@@ -79,7 +87,7 @@ namespace TechSupport
             }
             catch (SqlException ex)
             {
-                System.Windows.Forms.MessageBox.Show("A Database error occured fetching technicians: " + ex.Message);
+                MessageBox.Show("A Database error occured fetching technicians: " + ex.Message);
                 this.BeginInvoke(new MethodInvoker(Close));
                 return;
             }
@@ -112,13 +120,13 @@ namespace TechSupport
         {
             if (TechnicianBox.SelectedIndex < 0)
             {
-                System.Windows.Forms.MessageBox.Show("A Technician must be assigned before an incident can be closed");
+                MessageBox.Show("A Technician must be assigned before an incident can be closed");
                 return;
             }
             Boolean successfullyClosed = CloseIncident();
             if (successfullyClosed)
             {
-                System.Windows.Forms.MessageBox.Show("Incident Closed");
+                MessageBox.Show("Incident Closed");
                 Close();
             }            
         }
@@ -142,7 +150,7 @@ namespace TechSupport
             }
             catch (SqlException ex)
             {
-                System.Windows.Forms.MessageBox.Show("Database error updating incidnet.\n" + ex.Message);
+                MessageBox.Show("Database error updating incidnet.\n" + ex.Message);
                 return false;
             }
             return true;
@@ -167,7 +175,7 @@ namespace TechSupport
             String addText = TextToAddBox.Text;
             if (addText.Trim() == "" && !newTechAssigned)
             {
-                System.Windows.Forms.MessageBox.Show("Incident cannot be updated unless text is added or a tech is changed");
+                MessageBox.Show("Incident cannot be updated unless text is added or a tech is changed");
                 return;
             }
             else if (addText.Trim() == "")
@@ -182,10 +190,10 @@ namespace TechSupport
             }
             catch (SqlException ex)
             {
-                System.Windows.Forms.MessageBox.Show("Database error updating incident.\n" + ex.Message);
+                MessageBox.Show("Database error updating incident.\n" + ex.Message);
                 return;
             }
-            System.Windows.Forms.MessageBox.Show("Incident updated");
+            MessageBox.Show("Incident updated");
             Close();
         }
 
