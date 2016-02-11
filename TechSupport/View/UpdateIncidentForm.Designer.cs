@@ -159,6 +159,7 @@
             this.DescriptionBox.Location = new System.Drawing.Point(165, 278);
             this.DescriptionBox.Multiline = true;
             this.DescriptionBox.Name = "DescriptionBox";
+            this.DescriptionBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.DescriptionBox.Size = new System.Drawing.Size(293, 87);
             this.DescriptionBox.TabIndex = 17;
             // 

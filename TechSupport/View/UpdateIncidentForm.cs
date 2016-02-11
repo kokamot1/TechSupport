@@ -117,6 +117,13 @@ namespace TechSupport
             TextToAddBox.Enabled = true;
             DescriptionBox.Enabled = false;
             TechnicianBox.Enabled = true;
+
+            if (this.currentIncident.Description.Length == MAX_DESCRIPTION_LENGTH)
+            {
+                MessageBox.Show("The description for this incidident is at its max size and must be edited if you want to change it.");
+                EnableEditInDescriptionBox(this.currentIncident.Description);
+            }
+
         }
 
         private void CloseIncidentBtn_Click(object sender, EventArgs e)
@@ -209,8 +216,8 @@ namespace TechSupport
             try
             {
                 IncidentsController.UpdateIncident(this.currentIncident);
-                ResetUpdateForm();
                 MessageBox.Show("Incident updated");
+                ResetUpdateForm();
             }
             catch (SqlException ex)
             {
