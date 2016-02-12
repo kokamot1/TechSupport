@@ -144,6 +144,10 @@ namespace TechSupport
         private Boolean CloseIncident()
         {
             List<Technician> techList = (List<Technician>) TechnicianBox.DataSource;
+            if (!ConfirmCloseIncident())
+            {
+                return false;
+            }
             String selectedTechName = techList[TechnicianBox.SelectedIndex].Name;
             int selectedTechID = techList[TechnicianBox.SelectedIndex].TechID;
 
@@ -152,6 +156,7 @@ namespace TechSupport
             this.currentIncident.TechID = selectedTechID;
             this.currentIncident.TechName = selectedTechName;
             this.currentIncident.Description = this.currentIncident.Description + Environment.NewLine + addText;
+
             this.currentIncident.DateClosed = DateTime.Now;
 
             try
@@ -246,6 +251,15 @@ namespace TechSupport
             //Description is too long and not truncated.  User must do the editing
             EnableEditInDescriptionBox(newDescription);
             throw new DescriptionTooLongException();
+        }
+
+        private Boolean ConfirmCloseIncident()
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result;
+            string message = "Once closed an incident can no longer be updated. Proceed to close?";
+            result = MessageBox.Show(message, "Confirm Close", buttons);
+            return (result == DialogResult.Yes);
         }
 
         //Move the added text to the description and have the user edit it there
