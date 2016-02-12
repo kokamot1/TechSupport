@@ -45,7 +45,7 @@ namespace TechSupport
 
         private void CloseIncidentBtn_Click(object sender, EventArgs e)
         {
-            if (TechnicianBox.SelectedIndex < 0)
+            if (this.currentIncident.TechID == null)
             {
                 MessageBox.Show("A Technician must be assigned before an incident can be closed");
                 return;
@@ -269,6 +269,7 @@ namespace TechSupport
                 return newDescription;
             }
 
+            //Handle when the new description is too long
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             DialogResult result;
             result = MessageBox.Show("The updated description is over " + MAX_DESCRIPTION_LENGTH + " characters. OK to truncate?", "Description too long", buttons);
@@ -277,9 +278,12 @@ namespace TechSupport
             {
                 return newDescription.Substring(0, MAX_DESCRIPTION_LENGTH);
             }
-            //Description is too long and not truncated.  User must do the editing
-            EnableEditInDescriptionBox(newDescription);
-            throw new DescriptionTooLongException();
+            else
+            {
+                //Description is too long and not truncated.  User must do the editing
+                EnableEditInDescriptionBox(newDescription);
+                throw new DescriptionTooLongException();
+            }
         }
 
         private Boolean ConfirmCloseIncident()
@@ -291,17 +295,18 @@ namespace TechSupport
             return (result == DialogResult.Yes);
         }
 
-        //Move the added text to the description and have the user edit it there
+        //Set the description box text and allow user to edit the box.
+        //And clear and disable the TextToAdd box
         private void EnableEditInDescriptionBox(string newDescription)
         {
             DescriptionBox.Text = newDescription;
             TextToAddBox.Text = "";
             DescriptionBox.Enabled = true;
             TextToAddBox.Enabled = false;
-          
         }
 
         // Check if the incident has been modified in the database since the form was loaded
+        // Returns true if it has been modified
         private Boolean CheckIfDatabaseModified()
         {
             Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
@@ -312,17 +317,20 @@ namespace TechSupport
                 Close();
                 return true;
             }
+
             else if (dbIncident.DateClosed != null)
             {
                 MessageBox.Show("This incident has been closed by another process and cannot be updated");
                 Close();
                 return true;
             }
+
             else if (!dbIncident.Equals(this.fetchedIncident))
             {
                 MessageBox.Show("Incident has been modified in the database. Cannot update.  Click 'Get Incident' to reload");
                 return true;
             }
+
             else
             {
                 return false;
