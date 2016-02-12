@@ -239,6 +239,7 @@
             this.TechnicianBox.Name = "TechnicianBox";
             this.TechnicianBox.Size = new System.Drawing.Size(293, 21);
             this.TechnicianBox.TabIndex = 14;
+            this.TechnicianBox.SelectedIndexChanged += new System.EventHandler(this.TechnicianBox_SelectedIndexChanged);
             // 
             // UpdateIncidentForm
             // 

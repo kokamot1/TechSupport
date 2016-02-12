@@ -16,7 +16,11 @@ namespace TechSupport
     public partial class UpdateIncidentForm : Form
     {
         public const int MAX_DESCRIPTION_LENGTH = 200;
+        // This object will hold the updates made in the form
         private Incident currentIncident;
+        // This object will hold the values of the incident as fetched from the db
+        // and be used to check if the db has been modified before executing an update
+        private Incident fetchedIncident;
 
         public UpdateIncidentForm()
         {
@@ -35,6 +39,55 @@ namespace TechSupport
         }
 
         private void GetIncidentBtn_Click(object sender, EventArgs e)
+        {
+            LoadIncident();
+        }
+
+        private void CloseIncidentBtn_Click(object sender, EventArgs e)
+        {
+            if (TechnicianBox.SelectedIndex < 0)
+            {
+                MessageBox.Show("A Technician must be assigned before an incident can be closed");
+                return;
+            }
+            Boolean successfullyClosed = CloseIncident();
+            if (successfullyClosed)
+            {
+                MessageBox.Show("Incident Closed");
+                Close();
+            }
+        }
+
+        private void UpdateBtn_Click(object sender, EventArgs e)
+        {
+            UpdateIncident();
+        }
+
+        private void TechnicianBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateSelectedTechnician();
+        }
+
+        //Sets the technician for the currentIncident based on the ComboBox slection
+        private void UpdateSelectedTechnician()
+        {
+            if (this.currentIncident == null)
+            {
+                return;
+            }
+            else if (TechnicianBox.SelectedItem == null)
+            {
+                this.currentIncident.TechID = null;
+                this.currentIncident.TechName = null;
+            }
+            else
+            {
+                this.currentIncident.TechID = ((Technician)TechnicianBox.SelectedItem).TechID;
+                this.currentIncident.TechName = ((Technician)TechnicianBox.SelectedItem).Name;
+            }
+        }
+
+        private void LoadIncident()
         {
             int incidentID;
             try
@@ -57,6 +110,7 @@ namespace TechSupport
                 MessageBox.Show("Database Query error fetching incident.\n" + ex.Message);
                 return;
             }
+
             if (incident == null)
             {
                 MessageBox.Show("No incidents found with Incident ID " + incidentID);
@@ -68,10 +122,10 @@ namespace TechSupport
             }
             else
             {
-                this.currentIncident = incident;
-                ResetUpdateForm();
+                this.fetchedIncident = incident;
+                this.currentIncident = this.fetchedIncident.ShallowCopy();
+                ResetForm();
             }
-
         }
 
 
@@ -95,15 +149,15 @@ namespace TechSupport
             TechnicianBox.SelectedIndex = -1;
         }
 
-
-        private void ResetUpdateForm()
+        //Sets the form fields with to the values of currentIncident
+        private void ResetForm()
         {
             CustomerBox.Text = this.currentIncident.Customer;
             ProductBox.Text = this.currentIncident.ProductName;
             TitleBox.Text = this.currentIncident.Title;
             DateOpenedBox.Text = this.currentIncident.DateOpened.ToString();
             DescriptionBox.Text = this.currentIncident.Description;
-            if (this.currentIncident.TechID > 0)
+            if (this.currentIncident.TechID != null)
             {
                 TechnicianBox.SelectedValue = this.currentIncident.TechID;
             }
@@ -123,22 +177,6 @@ namespace TechSupport
                 MessageBox.Show("The description for this incidident is at its max size and must be edited if you want to change it.");
                 EnableEditInDescriptionBox(this.currentIncident.Description);
             }
-
-        }
-
-        private void CloseIncidentBtn_Click(object sender, EventArgs e)
-        {
-            if (TechnicianBox.SelectedIndex < 0)
-            {
-                MessageBox.Show("A Technician must be assigned before an incident can be closed");
-                return;
-            }
-            Boolean successfullyClosed = CloseIncident();
-            if (successfullyClosed)
-            {
-                MessageBox.Show("Incident Closed");
-                Close();
-            }            
         }
 
         private Boolean CloseIncident()
@@ -171,21 +209,9 @@ namespace TechSupport
             return true;
         }
 
-        private void UpdateBtn_Click(object sender, EventArgs e)
+        private void UpdateIncident()
         {
-            Boolean newTechAssigned = false;
-            if (TechnicianBox.SelectedIndex >= 0)
-            {
-                List<Technician> techList = (List<Technician>)TechnicianBox.DataSource;
-                String selectedTechName = techList[TechnicianBox.SelectedIndex].Name;
-                int selectedTechID = techList[TechnicianBox.SelectedIndex].TechID;
-                if (selectedTechID != this.currentIncident.TechID)
-                {
-                    newTechAssigned = true;
-                }
-                this.currentIncident.TechID = selectedTechID;
-                this.currentIncident.TechName = selectedTechName;
-            }
+            Boolean newTechAssigned = this.currentIncident.TechID != this.fetchedIncident.TechID;
 
             String addText = TextToAddBox.Text;
 
@@ -205,7 +231,7 @@ namespace TechSupport
                 addText = Environment.NewLine + "<" + DateTime.Now.Date.ToShortDateString() + ">  " + addText;
             }
 
-            string newDescription = "";
+            string newDescription;
             try
             {
                 newDescription = CreateNewDescription(addText);
@@ -217,19 +243,22 @@ namespace TechSupport
                 return;
             }
             this.currentIncident.Description = newDescription;
-
+        
             try
             {
+                if (CheckIfDatabaseModified())
+                {
+                    return;
+                }
                 IncidentsController.UpdateIncident(this.currentIncident);
-                MessageBox.Show("Incident updated");
-                ResetUpdateForm();
+                this.fetchedIncident = this.currentIncident.ShallowCopy();
             }
             catch (SqlException ex)
             {
                 MessageBox.Show("Database error updating incident.\n" + ex.Message);
-                return;
             }
-           
+            MessageBox.Show("Incident updated");
+            ResetForm();
         }
 
         private string CreateNewDescription(string updateText)
@@ -272,13 +301,41 @@ namespace TechSupport
           
         }
 
+        // Check if the incident has been modified in the database since the form was loaded
+        private Boolean CheckIfDatabaseModified()
+        {
+            Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
+
+            if (dbIncident == null)
+            {
+                MessageBox.Show("This incident has been deleted and cannot be updated");
+                Close();
+                return true;
+            }
+            else if (dbIncident.DateClosed != null)
+            {
+                MessageBox.Show("This incident has been closed by another process and cannot be updated");
+                Close();
+                return true;
+            }
+            else if (!dbIncident.Equals(this.fetchedIncident))
+            {
+                MessageBox.Show("Incident has been modified in the database. Cannot update.  Click 'Get Incident' to reload");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Used to indicate the description field has too many characters
         public class DescriptionTooLongException : Exception
         {
             public DescriptionTooLongException()
             {
             }
         }
-
 
     }
 
