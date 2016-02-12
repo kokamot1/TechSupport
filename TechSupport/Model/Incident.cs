@@ -40,25 +40,5 @@ namespace TechSupport.Model
             return (Incident)this.MemberwiseClone();
         }
 
-        public override bool Equals(Object obj)
-        {
-            // Check for null values and compare run-time types.
-            if (obj == null || GetType() != obj.GetType())
-                return false;
-
-            Incident other = (Incident) obj;
-            return (incidentID == other.incidentID &&
-                    DateOpened == other.DateOpened &&
-                    DateClosed == other.DateClosed &&
-                    Customer == other.Customer &&
-                    CustomerID == other.CustomerID &&
-                    ProductCode == other.ProductCode &&
-                    ProductName == other.ProductName &&
-                    TechName == other.TechName &&
-                    TechID == other.TechID &&
-                    Title == other.Title &&
-                    Description == other.Description);
-        }
-
     }
 }

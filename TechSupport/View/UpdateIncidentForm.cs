@@ -313,7 +313,7 @@ namespace TechSupport
 
             if (dbIncident == null)
             {
-                MessageBox.Show("This incident has been deleted and cannot be updated");
+                MessageBox.Show("This incident has been deleted by another process and cannot be updated");
                 Close();
                 return true;
             }
@@ -325,9 +325,9 @@ namespace TechSupport
                 return true;
             }
 
-            else if (!dbIncident.Equals(this.fetchedIncident))
+            else if (dbIncident.Description != this.fetchedIncident.Description)
             {
-                MessageBox.Show("Incident has been modified in the database. Cannot update.  Click 'Get Incident' to reload");
+                MessageBox.Show("Incident has been changed by another process.\nClick 'Get Incident' to reload", "Error Updating");
                 return true;
             }
 
