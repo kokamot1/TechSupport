@@ -187,13 +187,13 @@ namespace TechSupport
         // Close the current incident. Returns false if not successful
         private Boolean CloseIncident()
         {
-            if (!ConfirmCloseIncident())
-            {
-                return false;
-            }
             if (this.currentIncident.TechID == null)
             {
                 MessageBox.Show("A Technician must be assigned before an incident can be closed");
+                return false;
+            }
+            if (!ConfirmCloseIncident())
+            {
                 return false;
             }
 
