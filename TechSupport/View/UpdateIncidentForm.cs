@@ -18,9 +18,10 @@ namespace TechSupport
         public const int MAX_DESCRIPTION_LENGTH = 200;
         // This object will hold the updates made in the form
         private Incident currentIncident;
-        // This object will hold the values of the incident as fetched from the db
+        // fetchedIncident will hold the values of the incident as fetched from the db
         // and be used to check if the db has been modified before executing an update
         private Incident fetchedIncident;
+        private Boolean DescriptionBoxFull;
 
         public UpdateIncidentForm()
         {
@@ -87,6 +88,7 @@ namespace TechSupport
             }
         }
 
+        //Load the specified incident ID into the form
         private void LoadIncident()
         {
             int incidentID;
@@ -128,7 +130,6 @@ namespace TechSupport
             }
         }
 
-
         // Add the items in the Technician combo box
         private void LoadTechnicianComboBoxItems()
         {
@@ -168,14 +169,23 @@ namespace TechSupport
             CloseIncidentBtn.Enabled = true;
             UpdateBtn.Enabled = true;
             TextToAddBox.Text = "";
-            TextToAddBox.Enabled = true;
-            DescriptionBox.Enabled = false;
             TechnicianBox.Enabled = true;
 
-            if (this.currentIncident.Description.Length == MAX_DESCRIPTION_LENGTH)
+            // Check to see if the description is too long
+            // Since a newline and date are added before each update they must be factored in
+            // If their combined length is >= to the max length the user can't add anything
+            int descriptionLength = this.currentIncident.Description.Length;
+            int newLineDateLength = GetNewLineDatePrefix().Length;
+            if (descriptionLength + newLineDateLength >= MAX_DESCRIPTION_LENGTH)
             {
-                MessageBox.Show("The description for this incidident is at its max size and must be edited if you want to change it.");
-                EnableEditInDescriptionBox(this.currentIncident.Description);
+                MessageBox.Show("The description for this incidident is full and cannot be added to.");
+                TextToAddBox.Enabled = false;
+                DescriptionBoxFull = true;
+            }
+            else
+            {
+                TextToAddBox.Enabled = true;
+                DescriptionBoxFull = false;
             }
         }
 
@@ -212,44 +222,60 @@ namespace TechSupport
         private void UpdateIncident()
         {
             Boolean newTechAssigned = this.currentIncident.TechID != this.fetchedIncident.TechID;
-
             String addText = TextToAddBox.Text;
-
-            //If DescriptionBox has become enabled the user already added text
-            //and it was too long so all modifications are now in the description box
-            if (!DescriptionBox.Enabled)
+            
+            if (DescriptionBoxFull && addText != "")
             {
-                if (addText == "" && !newTechAssigned)
-                {
-                    MessageBox.Show("Incident cannot be updated unless text is added or a tech is changed");
-                    return;
-                }
-                if (addText == "" && newTechAssigned)
-                {
-                    addText = "updated/assigned the technician";
-                }
-                addText = Environment.NewLine + "<" + DateTime.Now.Date.ToShortDateString() + ">  " + addText;
-            }
-
-            string newDescription;
-            try
-            {
-                newDescription = CreateNewDescription(addText);
-            }
-            catch (DescriptionTooLongException ex)
-            {
-                //Description is too long and was not truncated.  
-                //User must edit before incident can be updated
+                MessageBox.Show("Cannot add text when the description is already full");
                 return;
             }
-            this.currentIncident.Description = newDescription;
-        
+            if (!DescriptionBoxFull && !newTechAssigned && addText == "")
+            {
+                MessageBox.Show("Incident cannot be updated unless text is added or a tech is changed");
+                return;
+            }
+
+            if (DescriptionBoxFull)
+            {
+                addText = "";
+            } 
+            else if (addText == "" && newTechAssigned)
+            {
+                addText = GetNewLineDatePrefix() + "updated/assigned the technician";
+                TextToAddBox.Text = "updated/assigned the technician";
+            }
+            else
+            {
+                addText = GetNewLineDatePrefix() + addText;
+            }
+
+            string newDescription = DescriptionBox.Text + addText;
+
+            if (newDescription.Length > MAX_DESCRIPTION_LENGTH)
+            {
+
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                DialogResult result;
+                int remainingCharacters = MAX_DESCRIPTION_LENGTH - GetNewLineDatePrefix().Length - 1;
+                result = MessageBox.Show("There is only room to add " + remainingCharacters + " characters. OK to truncate?", "Description too long", buttons);
+
+                if (result == DialogResult.Yes)
+                {
+                    newDescription = newDescription.Substring(0, MAX_DESCRIPTION_LENGTH);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             try
             {
                 if (CheckIfDatabaseModified())
                 {
                     return;
                 }
+                this.currentIncident.Description = newDescription;
                 IncidentsController.UpdateIncident(this.currentIncident);
                 this.fetchedIncident = this.currentIncident.ShallowCopy();
             }
@@ -261,31 +287,6 @@ namespace TechSupport
             ResetForm();
         }
 
-        private string CreateNewDescription(string updateText)
-        {
-            string newDescription = DescriptionBox.Text + updateText;
-            if (newDescription.Length <= MAX_DESCRIPTION_LENGTH)
-            {
-                return newDescription;
-            }
-
-            //Handle when the new description is too long
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            DialogResult result;
-            result = MessageBox.Show("The updated description is over " + MAX_DESCRIPTION_LENGTH + " characters. OK to truncate?", "Description too long", buttons);
-
-            if (result == DialogResult.Yes)
-            {
-                return newDescription.Substring(0, MAX_DESCRIPTION_LENGTH);
-            }
-            else
-            {
-                //Description is too long and not truncated.  User must do the editing
-                EnableEditInDescriptionBox(newDescription);
-                throw new DescriptionTooLongException();
-            }
-        }
-
         private Boolean ConfirmCloseIncident()
         {
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
@@ -293,16 +294,6 @@ namespace TechSupport
             string message = "Once closed an incident can no longer be updated. Proceed to close?";
             result = MessageBox.Show(message, "Confirm Close", buttons);
             return (result == DialogResult.Yes);
-        }
-
-        //Set the description box text and allow user to edit the box.
-        //And clear and disable the TextToAdd box
-        private void EnableEditInDescriptionBox(string newDescription)
-        {
-            DescriptionBox.Text = newDescription;
-            TextToAddBox.Text = "";
-            DescriptionBox.Enabled = true;
-            TextToAddBox.Enabled = false;
         }
 
         // Check if the incident has been modified in the database since the form was loaded
@@ -337,12 +328,10 @@ namespace TechSupport
             }
         }
 
-        // Used to indicate the description field has too many characters
-        public class DescriptionTooLongException : Exception
+        // Get a string containing of a newline and datestamp
+        private String GetNewLineDatePrefix()
         {
-            public DescriptionTooLongException()
-            {
-            }
+            return Environment.NewLine + "<" + DateTime.Now.Date.ToShortDateString() + ">  ";
         }
 
     }
