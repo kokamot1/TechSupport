@@ -145,7 +145,7 @@ namespace TechSupport
             TechnicianBox.SelectedIndex = -1;
         }
 
-        //Sets the form fields with to the values of currentIncident
+        //Sets the form fields to the values of currentIncident
         private void ResetForm()
         {
             CustomerBox.Text = this.currentIncident.Customer;
@@ -246,13 +246,11 @@ namespace TechSupport
             }
 
             string newDescription = DescriptionBox.Text + addText;
-
             if (newDescription.Length > MAX_DESCRIPTION_LENGTH)
             {
-
                 MessageBoxButtons buttons = MessageBoxButtons.YesNo;
                 DialogResult result;
-                int remainingCharacters = MAX_DESCRIPTION_LENGTH - GetNewLineDatePrefix().Length - 1;
+                int remainingCharacters = MAX_DESCRIPTION_LENGTH - GetNewLineDatePrefix().Length - currentIncident.Description.Length;
                 result = MessageBox.Show("There is only room to add " + remainingCharacters + " characters. OK to truncate?", "Description too long", buttons);
 
                 if (result == DialogResult.Yes)
@@ -267,7 +265,7 @@ namespace TechSupport
 
             try
             {
-                if (CheckIfDatabaseModified())
+                if (CheckIfDescriptionModified())
                 {
                     return;
                 }
@@ -292,22 +290,22 @@ namespace TechSupport
             return (result == DialogResult.Yes);
         }
 
-        // Check if the incident has been modified in the database since the form was loaded
+        // Check if the description has been modified in the DB since the incident was loaded
         // Returns true if it has been modified
-        private Boolean CheckIfDatabaseModified()
+        private Boolean CheckIfDescriptionModified()
         {
             Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
 
             if (dbIncident == null)
             {
-                MessageBox.Show("This incident has been deleted by another process and cannot be updated");
+                MessageBox.Show("This incident has been deleted by another process");
                 Close();
                 return true;
             }
 
             else if (dbIncident.DateClosed != null)
             {
-                MessageBox.Show("This incident has been closed by another process and cannot be updated");
+                MessageBox.Show("This incident has been closed by another process");
                 Close();
                 return true;
             }
