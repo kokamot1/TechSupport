@@ -46,11 +46,6 @@ namespace TechSupport
 
         private void CloseIncidentBtn_Click(object sender, EventArgs e)
         {
-            if (this.currentIncident.TechID == null)
-            {
-                MessageBox.Show("A Technician must be assigned before an incident can be closed");
-                return;
-            }
             Boolean successfullyClosed = CloseIncident();
             if (successfullyClosed)
             {
@@ -189,24 +184,25 @@ namespace TechSupport
             }
         }
 
+        // Close the current incident. Returns false if not successful
         private Boolean CloseIncident()
         {
-            List<Technician> techList = (List<Technician>) TechnicianBox.DataSource;
             if (!ConfirmCloseIncident())
             {
                 return false;
             }
-            String selectedTechName = techList[TechnicianBox.SelectedIndex].Name;
-            int selectedTechID = techList[TechnicianBox.SelectedIndex].TechID;
-
-            String addText = TextToAddBox.Text;
-
-            this.currentIncident.TechID = selectedTechID;
-            this.currentIncident.TechName = selectedTechName;
-            this.currentIncident.Description = this.currentIncident.Description + Environment.NewLine + addText;
+            if (this.currentIncident.TechID == null)
+            {
+                MessageBox.Show("A Technician must be assigned before an incident can be closed");
+                return false;
+            }
 
             this.currentIncident.DateClosed = DateTime.Now;
 
+            if (CheckIfDateClosedModified())
+            {
+                return false;
+            }
             try
             {
                 IncidentsController.UpdateIncident(this.currentIncident);
@@ -318,7 +314,32 @@ namespace TechSupport
 
             else if (dbIncident.Description != this.fetchedIncident.Description)
             {
-                MessageBox.Show("Incident has been changed by another process.\nClick 'Get Incident' to reload", "Error Updating");
+                MessageBox.Show("Incident has been changed by another process.\nClick 'Get Incident' to reload");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Check if the dateClosed has been modified in the DB since the incident was loaded
+        // Returns true if it has been modified
+        private Boolean CheckIfDateClosedModified()
+        {
+            Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
+
+            if (dbIncident == null)
+            {
+                MessageBox.Show("This incident has been deleted by another process");
+                Close();
+                return true;
+            }
+
+            else if (dbIncident.DateClosed != null)
+            {
+                MessageBox.Show("This incident has been closed by another process");
+                Close();
                 return true;
             }
 
