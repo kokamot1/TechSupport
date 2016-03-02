@@ -34,9 +34,9 @@ namespace TechSupport
             return IncidentData.IncidentByID(incidentID);
         }
 
-        public static void UpdateIncident(Incident incident)
+        public static Boolean UpdateIncident(Incident oldIncident, Incident newIncident)
         {
-            IncidentData.UpdateIncident(incident);
+            return IncidentData.UpdateIncident(oldIncident, newIncident);
         }
     }
 }

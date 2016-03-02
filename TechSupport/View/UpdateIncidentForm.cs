@@ -199,13 +199,14 @@ namespace TechSupport
 
             this.currentIncident.DateClosed = DateTime.Now;
 
-            if (CheckIfDateClosedModified())
-            {
-                return false;
-            }
             try
             {
-                IncidentsController.UpdateIncident(this.currentIncident);
+                Boolean updateSuccessful = IncidentsController.UpdateIncident(this.fetchedIncident, this.currentIncident);
+                if (!updateSuccessful)
+                {
+                    MessageBox.Show("Cannot close. Incident has been changed by another process.\nClick 'Get Incident' to reload");
+                    return false;
+                }
             }
             catch (SqlException ex)
             {
@@ -265,12 +266,12 @@ namespace TechSupport
 
             try
             {
-                if (CheckIfDescriptionModified())
-                {
-                    return;
-                }
                 this.currentIncident.Description = newDescription;
-                IncidentsController.UpdateIncident(this.currentIncident);
+                Boolean updateSuccessful = IncidentsController.UpdateIncident(this.fetchedIncident, this.currentIncident);
+                if (!updateSuccessful)
+                {
+                    MessageBox.Show("Cannot udpate. Incident has been changed by another process.\nClick 'Get Incident' to reload");
+                }
                 this.fetchedIncident = this.currentIncident.ShallowCopy();
             }
             catch (SqlException ex)
@@ -288,63 +289,6 @@ namespace TechSupport
             string message = "Once closed an incident can no longer be updated. Proceed to close?";
             result = MessageBox.Show(message, "Confirm Close", buttons);
             return (result == DialogResult.Yes);
-        }
-
-        // Check if the description has been modified in the DB since the incident was loaded
-        // Returns true if it has been modified
-        private Boolean CheckIfDescriptionModified()
-        {
-            Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
-
-            if (dbIncident == null)
-            {
-                MessageBox.Show("This incident has been deleted by another process");
-                Close();
-                return true;
-            }
-
-            else if (dbIncident.DateClosed != null)
-            {
-                MessageBox.Show("This incident has been closed by another process");
-                Close();
-                return true;
-            }
-
-            else if (dbIncident.Description != this.fetchedIncident.Description)
-            {
-                MessageBox.Show("Incident has been changed by another process.\nClick 'Get Incident' to reload");
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        // Check if the dateClosed has been modified in the DB since the incident was loaded
-        // Returns true if it has been modified
-        private Boolean CheckIfDateClosedModified()
-        {
-            Incident dbIncident = IncidentsController.GetIncidentByID(this.currentIncident.IncidentID);
-
-            if (dbIncident == null)
-            {
-                MessageBox.Show("This incident has been deleted by another process");
-                Close();
-                return true;
-            }
-
-            else if (dbIncident.DateClosed != null)
-            {
-                MessageBox.Show("This incident has been closed by another process");
-                Close();
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
         }
 
         // Get a string containing of a newline and datestamp
