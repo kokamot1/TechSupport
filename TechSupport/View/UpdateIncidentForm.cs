@@ -198,13 +198,15 @@ namespace TechSupport
             }
 
             this.currentIncident.DateClosed = DateTime.Now;
-
+            if (TextToAddBox.Text != "")
+                this.currentIncident.Description = this.currentIncident.Description + GetNewLineDatePrefix() + TextToAddBox.Text;
             try
             {
                 Boolean updateSuccessful = IncidentsController.UpdateIncident(this.fetchedIncident, this.currentIncident);
                 if (!updateSuccessful)
                 {
                     MessageBox.Show("Cannot close. Incident has been changed by another process.\nClick 'Get Incident' to reload");
+                    this.currentIncident.DateClosed = null;
                     return false;
                 }
             }
