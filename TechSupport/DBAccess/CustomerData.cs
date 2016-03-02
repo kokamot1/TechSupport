@@ -15,7 +15,7 @@ namespace TechSupport.DBAccess
             List<Customer> customerList = new List<Customer>();
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
-                "SELECT * FROM Customers";
+                "SELECT CustomerID, Name FROM Customers";
             SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
             SqlDataReader reader = null;
 
@@ -28,12 +28,6 @@ namespace TechSupport.DBAccess
                 {
                     Customer customer = new Customer((int)reader["CustomerID"]);
                     customer.Name = reader["Name"].ToString();
-                    customer.Address = reader["Address"].ToString();
-                    customer.City = reader["City"].ToString();
-                    customer.State = reader["State"].ToString();
-                    customer.ZipCode = reader["ZipCode"].ToString();
-                    customer.Phone = reader["Phone"].ToString();
-                    customer.Email = reader["Email"].ToString();
                     customerList.Add(customer);
                 }
 

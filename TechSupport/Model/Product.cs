@@ -23,7 +23,5 @@ namespace TechSupport.Model
             }
         }
         public string Name { get; set; }
-        public decimal Version { get; set; }
-        public DateTime ReleaseDate { get; set; }
     }
 }

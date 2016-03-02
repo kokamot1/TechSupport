@@ -15,7 +15,7 @@ namespace TechSupport.DBAccess
             List<Product> productList = new List<Product>();
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
-                "SELECT * FROM Products";
+                "SELECT ProductCode, Name FROM Products";
             SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
             SqlDataReader reader = null;
 
@@ -28,8 +28,6 @@ namespace TechSupport.DBAccess
                 {
                     Product product = new Product(reader["ProductCode"].ToString());
                     product.Name = reader["Name"].ToString();
-                    product.Version = (decimal) reader["Version"];
-                    product.ReleaseDate = (DateTime) reader["ReleaseDate"];
                     productList.Add(product);
                 }
 

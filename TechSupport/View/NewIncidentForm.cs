@@ -28,30 +28,20 @@ namespace TechSupport
         private void LoadComboBoxes()
         {
             List<Customer> customersList;
+            List<Product> productsList;
             try
             {
                 customersList = CustomersController.Customers();
+                productsList = ProductsController.Products();
             }
             catch (SqlException ex)
             {
-                System.Windows.Forms.MessageBox.Show("A Database error occured fetching customers: " + ex.Message);
+                System.Windows.Forms.MessageBox.Show("A Database error occured fetching the lists of customers and products: " + ex.Message);
                 this.BeginInvoke(new MethodInvoker(Close));
                 return;
             }
             customerBox.DataSource = customersList;
             customerBox.DisplayMember = "Name";
-
-            List<Product> productsList;
-            try
-            {
-                productsList = ProductsController.Products();
-            }
-            catch (SqlException ex)
-            {
-                System.Windows.Forms.MessageBox.Show("A Database error occured fetching products: " + ex.Message);
-                this.BeginInvoke(new MethodInvoker(Close));
-                return;
-            }
             productBox.DataSource = productsList;
             productBox.DisplayMember = "Name";
         }
