@@ -234,5 +234,51 @@ namespace TechSupport.DBAccess
                 connection.Close();
             }
         }
+
+
+        public static List<Incident> GetIncidentsByTechnician(int techID)
+        {
+            List<Incident> incidentList = new List<Incident>();
+            SqlConnection connection = DBConnection.GetConnection();
+            string selectStatement =
+                "SELECT i.incidentID, i.ProductCode, i.DateOpened, c.Name as Customer, c.CustomerID as customerID, " +
+                "    t.Name as Technician, i.Title " +
+                "FROM Incidents i " +
+                "JOIN Customers c ON c.CustomerID = i.CustomerID " +
+                "LEFT OUTER JOIN Technicians t ON t.TechID = i.TechID " +
+                "WHERE i.DateClosed IS NULL" +
+                "      AND i.TechID = @TechID";
+            SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
+            selectCommand.Parameters.AddWithValue("@TechID", techID);
+            SqlDataReader reader = null;
+
+            try
+            {
+                connection.Open();
+                reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Incident incident = new Incident((int)reader["incidentID"]);
+                    incident.ProductCode = reader["ProductCode"].ToString();
+                    incident.DateOpened = (DateTime)reader["DateOpened"];
+                    incident.Customer = reader["Customer"].ToString();
+                    incident.CustomerID = (int)reader["CustomerID"];
+                    incident.TechName = reader["Technician"].ToString();
+                    incident.Title = reader["Title"].ToString();
+                    incidentList.Add(incident);
+                }
+
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+                if (reader != null)
+                    reader.Close();
+            }
+            return incidentList;
+        }
+
     }
 }

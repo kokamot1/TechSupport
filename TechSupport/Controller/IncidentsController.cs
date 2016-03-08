@@ -38,5 +38,10 @@ namespace TechSupport
         {
             return IncidentData.UpdateIncident(oldIncident, newIncident);
         }
+
+        public static List<Incident> IncidentsByTechnician(int techID)
+        {
+            return IncidentData.GetIncidentsByTechnician(techID);
+        }
     }
 }
