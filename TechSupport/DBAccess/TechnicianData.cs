@@ -13,10 +13,10 @@ namespace TechSupport.DBAccess
     {
         public static List<Technician> GetTechnicians()
         {
-                        List<Technician> TechnicianList = new List<Technician>();
+            List<Technician> TechnicianList = new List<Technician>();
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
-                "SELECT * FROM Technicians";
+                "SELECT TechId, Name FROM Technicians";
             SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
             SqlDataReader reader = null;
 
@@ -29,6 +29,42 @@ namespace TechSupport.DBAccess
                 {
                     Technician technician = new Technician((int) reader["TechID"]);
                     technician.Name = reader["Name"].ToString();
+                    TechnicianList.Add(technician);
+                }
+
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+                if (reader != null)
+                    reader.Close();
+            }
+            return TechnicianList;
+        }
+
+
+        public static List<Technician> GetTechniciansWithOpenIncidents()
+        {
+            List<Technician> TechnicianList = new List<Technician>();
+            SqlConnection connection = DBConnection.GetConnection();
+            string selectStatement =
+                "SELECT TechId, Name, Email, Phone FROM Technicians " +
+                "WHERE TechID IN (SELECT TechID FROM Incidents WHERE DateClosed IS NULL)";
+            SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
+            SqlDataReader reader = null;
+
+            try
+            {
+                connection.Open();
+                reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Technician technician = new Technician((int)reader["TechID"]);
+                    technician.Name = reader["Name"].ToString();
+                    technician.Email = reader["Email"].ToString();
+                    technician.Phone = reader["Phone"].ToString();
                     TechnicianList.Add(technician);
                 }
 

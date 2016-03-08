@@ -14,5 +14,10 @@ namespace TechSupport.Controller
         {
             return TechnicianData.GetTechnicians();
         }
+
+        public static List<Technician> TechniciansWithOpenIncidents()
+        {
+            return TechnicianData.GetTechniciansWithOpenIncidents();
+        }
     }
 }
