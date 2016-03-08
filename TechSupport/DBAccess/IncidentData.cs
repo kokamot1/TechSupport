@@ -242,10 +242,11 @@ namespace TechSupport.DBAccess
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
                 "SELECT i.incidentID, i.ProductCode, i.DateOpened, c.Name as Customer, c.CustomerID as customerID, " +
-                "    t.Name as Technician, i.Title " +
+                "    t.Name as Technician, i.Title, p.Name as ProductName " +
                 "FROM Incidents i " +
                 "JOIN Customers c ON c.CustomerID = i.CustomerID " +
-                "LEFT OUTER JOIN Technicians t ON t.TechID = i.TechID " +
+                "JOIN Technicians t ON t.TechID = i.TechID " +
+                "JOIN Products p ON p.ProductCode = i.ProductCode " +
                 "WHERE i.DateClosed IS NULL" +
                 "      AND i.TechID = @TechID";
             SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
@@ -261,6 +262,7 @@ namespace TechSupport.DBAccess
                 {
                     Incident incident = new Incident((int)reader["incidentID"]);
                     incident.ProductCode = reader["ProductCode"].ToString();
+                    incident.ProductName = reader["ProductName"].ToString();
                     incident.DateOpened = (DateTime)reader["DateOpened"];
                     incident.Customer = reader["Customer"].ToString();
                     incident.CustomerID = (int)reader["CustomerID"];
