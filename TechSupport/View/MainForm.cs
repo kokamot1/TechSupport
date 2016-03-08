@@ -43,5 +43,13 @@ namespace TechSupport
             updateIncident.Show();
 
         }
+
+        private void viewOpenIncidentsByTechnicianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ViewIncidentsByTechnician openIncidentsByTechnician = new ViewIncidentsByTechnician();
+            openIncidentsByTechnician.MdiParent = this;
+            openIncidentsByTechnician.Show();
+
+        }
     }
 }
