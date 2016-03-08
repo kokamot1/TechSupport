@@ -22,11 +22,17 @@ namespace TechSupport
             InitializeComponent();
         }
 
+        private void nameComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.GetIncidentData();
+        }
+
         private List<Technician> technicianList;
 
         private void ViewIncidentsByTechnician_Load(object sender, EventArgs e)
         {
             this.GetTechniciansWithOpenIncidentList();
+            this.GetIncidentData();
         }
 
         private void GetTechniciansWithOpenIncidentList()
@@ -41,6 +47,23 @@ namespace TechSupport
                 System.Windows.Forms.MessageBox.Show("A Database error occured fetching the technicians: " + ex.Message);
                 this.BeginInvoke(new MethodInvoker(Close));
                 return;
+            }
+        }
+
+        private void GetIncidentData()
+        {
+            int techID = (int)nameComboBox.SelectedValue;
+            technicianBindingSource.Clear();
+            technicianBindingSource.Add(nameComboBox.SelectedItem);
+
+            try
+            {
+                List<Incident> incidents = IncidentsController.IncidentsByTechnician(techID);
+                incidentDataGridView.DataSource = incidents;
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Database error retreiving incidents for technician: " + ex.Message);
             }
         }
 

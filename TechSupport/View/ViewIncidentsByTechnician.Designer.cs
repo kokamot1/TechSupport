@@ -239,6 +239,7 @@
             this.nameComboBox.Size = new System.Drawing.Size(232, 21);
             this.nameComboBox.TabIndex = 2;
             this.nameComboBox.ValueMember = "TechID";
+            this.nameComboBox.SelectedIndexChanged += new System.EventHandler(this.nameComboBox_SelectedIndexChanged);
             // 
             // emailTextBox
             // 
