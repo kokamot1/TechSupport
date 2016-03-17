@@ -12,7 +12,6 @@ using TechSupport.Controller;
 using System.Data.SqlClient;
 
 
-
 namespace TechSupport
 {
     public partial class ViewIncidentsByTechnician : Form
@@ -40,7 +39,6 @@ namespace TechSupport
             try
             {
                 technicianList = TechniciansController.TechniciansWithOpenIncidents();
-                nameComboBox.DataSource = technicianList;
             }
             catch (SqlException ex)
             {
@@ -48,10 +46,17 @@ namespace TechSupport
                 this.BeginInvoke(new MethodInvoker(Close));
                 return;
             }
+            nameComboBox.DataSource = technicianList;
+ 
         }
 
         private void GetIncidentData()
         {
+            if (nameComboBox.SelectedValue == null)
+            {
+                MessageBox.Show("There are no technicians with open incidents");
+                return;
+            }
             int techID = (int)nameComboBox.SelectedValue;
             technicianBindingSource.Clear();
             technicianBindingSource.Add(nameComboBox.SelectedItem);
