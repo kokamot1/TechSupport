@@ -50,7 +50,7 @@ namespace TechSupport.DBAccess
             SqlConnection connection = DBConnection.GetConnection();
             string selectStatement =
                 "SELECT TechId, Name, Email, Phone FROM Technicians " +
-                "WHERE TechID IN (SELECT TechID FROM Incidents WHERE DateClosed IS NULL)";
+                "WHERE TechID IN (SELECT TechID FROM Incidents)";
             SqlCommand selectCommand = new SqlCommand(selectStatement, connection);
             SqlDataReader reader = null;
 
