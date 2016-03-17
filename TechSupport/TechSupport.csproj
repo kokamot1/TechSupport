@@ -32,8 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +51,11 @@
     <Compile Include="Controller\IncidentsController.cs" />
     <Compile Include="Controller\ProductsController.cs" />
     <Compile Include="Controller\TechniciansController.cs" />
+    <Compile Include="OpenIncidentsAssignedToTechs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenIncidentsAssignedToTechs.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DBAccess\CustomerData.cs" />
     <Compile Include="DBAccess\DBConnection.cs" />
     <Compile Include="DBAccess\IncidentData.cs" />
@@ -89,6 +97,7 @@
     <Compile Include="View\ViewIncidentsByTechnician.Designer.cs">
       <DependentUpon>ViewIncidentsByTechnician.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="OpenIncidentsAssignedToTechs.rdlc" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -98,6 +107,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Report1.rdlc" />
     <EmbeddedResource Include="View\IncidentsForm.resx">
       <DependentUpon>IncidentsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -113,6 +123,17 @@
     <EmbeddedResource Include="View\ViewIncidentsByTechnician.resx">
       <DependentUpon>ViewIncidentsByTechnician.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="OpenIncidentsAssignedToTechs.xsc">
+      <DependentUpon>OpenIncidentsAssignedToTechs.xsd</DependentUpon>
+    </None>
+    <None Include="OpenIncidentsAssignedToTechs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>OpenIncidentsAssignedToTechs.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="OpenIncidentsAssignedToTechs.xss">
+      <DependentUpon>OpenIncidentsAssignedToTechs.xsd</DependentUpon>
+    </None>
     <None Include="Properties\DataSources\TechSupport.Model.Incident.datasource" />
     <None Include="Properties\DataSources\TechSupport.Model.Technician.datasource" />
     <None Include="Properties\Settings.settings">
