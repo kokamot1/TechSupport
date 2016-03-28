@@ -51,5 +51,12 @@ namespace TechSupport
             openIncidentsByTechnician.Show();
 
         }
+
+        private void displayIncidentsByProductTechnicianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IncidentReportForm reportForm = new IncidentReportForm();
+            reportForm.MdiParent = this;
+            reportForm.Show();
+        }
     }
 }
