@@ -47,7 +47,7 @@
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "TechSupport.View.IncidentsAssignedReport.rdlc";
             this.reportViewer1.Location = new System.Drawing.Point(0, 0);
             this.reportViewer1.Name = "reportViewer1";
-            this.reportViewer1.Size = new System.Drawing.Size(815, 441);
+            this.reportViewer1.Size = new System.Drawing.Size(888, 441);
             this.reportViewer1.TabIndex = 0;
             // 
             // dataSet1
@@ -68,10 +68,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(815, 441);
+            this.ClientSize = new System.Drawing.Size(888, 441);
             this.Controls.Add(this.reportViewer1);
             this.Name = "IncidentReportForm";
-            this.Text = "IncidentReportForm";
+            this.Text = "Open Incidents Assigned to Technicians";
             this.Load += new System.EventHandler(this.IncidentReportForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataSet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.openIncidentsAssignedBindingSource)).EndInit();
