@@ -30,12 +30,6 @@ namespace TechSupport
 
         private void ViewIncidentsByTechnician_Load(object sender, EventArgs e)
         {
-            this.GetTechniciansWithOpenIncidentList();
-            this.GetIncidentData();
-        }
-
-        private void GetTechniciansWithOpenIncidentList()
-        {
             try
             {
                 technicianList = TechniciansController.TechniciansWithOpenIncidents();
@@ -47,7 +41,7 @@ namespace TechSupport
                 return;
             }
             nameComboBox.DataSource = technicianList;
- 
+            this.GetIncidentData();
         }
 
         private void GetIncidentData()
